@@ -20,7 +20,6 @@ client.connect(err => {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.send('item');
   client.connect(err => {
     if (err) {
       console.error('connection error', err.stack)
@@ -31,12 +30,12 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/create', function(req, res, next) {
-  const query = new Query("INSERT INTO item VALUES(2,'etc',1,'title')");
+  const query = new Query("INSERT INTO item VALUES(2,'2','2')");
   const result = client.query(query)
 });
 
 router.get('/read', function(req, res, next) {
-  const query = new Query("SELECT * FROM category")
+  const query = new Query("SELECT * FROM user")
   const result = client.query(query)
 
   var rows = [];
@@ -57,13 +56,13 @@ router.get('/read', function(req, res, next) {
 
 router.get('/update', function(req, res, next) {
   const query = new Query("UPDATE item " +
-                          "SET id = 1, etc = '1', user_id = 1, title = '1' "+
-                          "WHERE user_id = 5");
+                          "SET user_id = 1, id='1', pw='1' "+
+                          "WHERE user_id = 1");
   const result = client.query(query)
 });
 
 router.get('/delete', function(req, res, next) {
-  const query = new Query("DELETE FROM category WHERE id = 1");
+  const query = new Query("DELETE FROM user WHERE user_id = 1");
   const result = client.query(query)
 });
 module.exports = router;
