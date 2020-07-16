@@ -1,23 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const { Client }  = require("pg");
+const Query = require('pg').Query
 
-// ver.1
-// var connectionString = "pg://user:user1!@localhost:5432/postgres";
-// var client = new pg.Client(connectionString);
-// client.connect();
-
-// ver.2
-// var connectionString = {
-//   user : 'user',
-//   host : 'localhost',
-//   database : 'postgres',
-//   password : 'user1!',
-//   port : 5432,
-// };
-// var pool = new pg.Pool(connectionString);
-
-// ver.3
 var client = new Client({
     user : 'user',
     host : 'localhost',
@@ -36,34 +21,21 @@ client.connect(err => {
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.send('item');
-  var query = "SELECT * FROM item";
   client.connect(err => {
     if (err) {
       console.error('connection error', err.stack)
     } else {
       console.log('connected')
     }
-  })
-  client.query(query, (err, res) => {
-    if(err) throw err
-    console.log(res)
-    client.end()
   })
 });
 
 router.get('/create', function(req, res, next) {
-  var rows = new Array();
-  client.connect(err => {
-    if (err) {
-      console.error('connection error', err.stack)
-    } else {
-      console.log('connected')
-    }
-  })
-  });
+  const query = new Query("INSERT INTO item VALUES(5,'테스트','testID','testPW','url','etc',1)");
+  const result = client.query(query)
+});
 
 router.get('/read', function(req, res, next) {
-  const Query = require('pg').Query
   const query = new Query("SELECT * FROM item")
   const result = client.query(query)
 
@@ -84,10 +56,14 @@ router.get('/read', function(req, res, next) {
 });
 
 router.get('/update', function(req, res, next) {
-  res.send('item update');
+  const query = new Query("UPDATE item " +
+                          "SET user_id = 1, title = '업뎃', id = 'id', pw ='pw', url = 'url', etc = 'etc', category_id = 1 "+
+                          "WHERE user_id = 5");
+  const result = client.query(query)
 });
 
 router.get('/delete', function(req, res, next) {
-  res.send('item delete');
+  const query = new Query("DELETE FROM item WHERE user_id = 1");
+  const result = client.query(query)
 });
 module.exports = router;
