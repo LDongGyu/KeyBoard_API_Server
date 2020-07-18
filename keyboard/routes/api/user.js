@@ -29,6 +29,36 @@ router.get('/', function(req, res, next) {
   })
 });
 
+router.post('/login/:id/:pw',function(req,res,next){
+  var id = req.params.id;
+  var pw = req.params.pw;
+
+  const query = new Query(`SELECT * FROM users WHERE id = '${id}' and pw = '${pw}'`);
+  const result = client.query(query);
+
+  var length = 0;
+
+  query.on("row",row=>{
+    console.log(row);
+    length++;
+  });
+  query.on('end', () => {
+    if(length == 1){
+      res.send("success")
+    }
+    else if(length == 0){
+      res.send("fail")
+    }
+    else{
+      res.send("duplicate")
+    }
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
+  });
+});
+
 router.get('/create', function(req, res, next) {
   const query = new Query("INSERT INTO users VALUES(1,'2','2')");
   const result = client.query(query);
@@ -36,7 +66,7 @@ router.get('/create', function(req, res, next) {
 });
 
 router.get('/read', function(req, res, next) {
-  const query = new Query("SELECT * FROM user")
+  const query = new Query("SELECT * FROM users")
   const result = client.query(query)
 
   var rows = [];
@@ -58,7 +88,7 @@ router.get('/read', function(req, res, next) {
 });
 
 router.get('/update', function(req, res, next) {
-  const query = new Query("UPDATE user " +
+  const query = new Query("UPDATE users " +
                           "SET user_id = 1, id='1', pw='1' "+
                           "WHERE user_id = 1");
   const result = client.query(query)
@@ -66,7 +96,7 @@ router.get('/update', function(req, res, next) {
 });
 
 router.get('/delete', function(req, res, next) {
-  const query = new Query("DELETE FROM user WHERE user_id = 1");
+  const query = new Query("DELETE FROM users WHERE user_id = 1");
   const result = client.query(query)
   res.status(200).end();
 });
