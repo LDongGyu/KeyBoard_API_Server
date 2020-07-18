@@ -32,12 +32,13 @@ router.get('/', function(req, res, next) {
 
 router.get('/create', function(req, res, next) {
   const query = new Query("INSERT INTO item VALUES(2,'etc',1,'title')");
-  const result = client.query(query)
+  const result = client.query(query);
+  res.status(200).end();
 });
 
 router.get('/read', function(req, res, next) {
-  const query = new Query("SELECT * FROM category")
-  const result = client.query(query)
+  const query = new Query("SELECT * FROM category");
+  const result = client.query(query);
 
   var rows = [];
   /** 
@@ -53,6 +54,8 @@ router.get('/read', function(req, res, next) {
   query.on('error', err => {
     console.error(err.stack)
   });
+  res.send(rows);
+  res.status(200).end();
 });
 
 router.get('/update', function(req, res, next) {
@@ -60,10 +63,12 @@ router.get('/update', function(req, res, next) {
                           "SET id = 1, etc = '1', user_id = 1, title = '1' "+
                           "WHERE user_id = 5");
   const result = client.query(query)
+  res.status(200).end();
 });
 
 router.get('/delete', function(req, res, next) {
   const query = new Query("DELETE FROM category WHERE id = 1");
   const result = client.query(query)
+  res.status(200).end();
 });
 module.exports = router;

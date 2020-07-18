@@ -33,6 +33,7 @@ router.get('/', function(req, res, next) {
 router.get('/create', function(req, res, next) {
   const query = new Query("INSERT INTO item VALUES(5,'테스트','testID','testPW','url','etc',1)");
   const result = client.query(query)
+  res.status(200).end();
 });
 
 router.get('/read', function(req, res, next) {
@@ -53,6 +54,8 @@ router.get('/read', function(req, res, next) {
   query.on('error', err => {
     console.error(err.stack)
   });
+  res.send(rows);
+  res.status(200).end();
 });
 
 router.get('/update', function(req, res, next) {
@@ -60,10 +63,12 @@ router.get('/update', function(req, res, next) {
                           "SET user_id = 1, title = '업뎃', id = 'id', pw ='pw', url = 'url', etc = 'etc', category_id = 1 "+
                           "WHERE user_id = 5");
   const result = client.query(query)
+  res.status(200).end();
 });
 
 router.get('/delete', function(req, res, next) {
   const query = new Query("DELETE FROM item WHERE user_id = 1");
   const result = client.query(query)
+  res.status(200).end();
 });
 module.exports = router;
