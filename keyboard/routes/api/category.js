@@ -50,12 +50,12 @@ router.get('/read', function(req, res, next) {
   query.on('end', () => {
     console.log(rows);
     console.log('query done')
+    res.send(rows);
+    res.status(200).end();
   });
   query.on('error', err => {
     console.error(err.stack)
   });
-  res.send(rows);
-  res.status(200).end();
 });
 
 router.get('/update', function(req, res, next) {

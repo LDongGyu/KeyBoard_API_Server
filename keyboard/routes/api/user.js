@@ -30,8 +30,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/create', function(req, res, next) {
-  const query = new Query("INSERT INTO item VALUES(2,'2','2')");
-  const result = client.query(query)
+  const query = new Query("INSERT INTO users VALUES(1,'2','2')");
+  const result = client.query(query);
   res.status(200).end();
 });
 
@@ -49,16 +49,16 @@ router.get('/read', function(req, res, next) {
   query.on('end', () => {
     console.log(rows);
     console.log('query done')
+    res.send(rows);
+    res.status(200).end();
   });
   query.on('error', err => {
     console.error(err.stack)
   });
-  res.send(rows);
-  res.status(200).end();
 });
 
 router.get('/update', function(req, res, next) {
-  const query = new Query("UPDATE item " +
+  const query = new Query("UPDATE user " +
                           "SET user_id = 1, id='1', pw='1' "+
                           "WHERE user_id = 1");
   const result = client.query(query)
