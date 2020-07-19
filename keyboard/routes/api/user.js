@@ -4,7 +4,7 @@ const { Client }  = require("pg");
 const Query = require('pg').Query
 
 var client = new Client({
-    user : 'user',
+    user : 'users',
     host : 'localhost',
     database : 'postgres',
     password : 'user1!',
@@ -43,19 +43,47 @@ router.post('/login/:id/:pw',function(req,res,next){
     length++;
   });
   query.on('end', () => {
+    var result = new Object();
     if(length == 1){
-      res.send("success")
+      result.status = "success"
     }
     else if(length == 0){
-      res.send("fail")
+      result.status = "fail"
     }
     else{
-      res.send("duplicate")
+      result.status = "duplicate"
     }
+    res.json(result);
     res.status(200).end();
   });
   query.on('error', err => {
     console.error(err.stack)
+  });
+});
+
+router.post('/signUp/:id/:pw',function(req,res,next){
+  var id = req.params.id;
+  var pw = req.params.pw;
+
+  const query = new Query(`INSERT INTO users(id,pw) VALUES('${id}','${pw}')`);
+  var result = new Object();
+
+  client.query(query);
+
+  query.on("row",row=>{
+    console.log(row);
+  });
+  query.on('end', () => {
+    console.log("success");
+    result.status = "success"
+    res.json(result);
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
+    result.status = "fail"
+    res.json(result);
+    res.status(400).end();
   });
 });
 

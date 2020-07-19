@@ -4,7 +4,7 @@ const { Client }  = require("pg");
 const Query = require('pg').Query
 
 var client = new Client({
-    user : 'user',
+    user : 'users',
     host : 'localhost',
     database : 'postgres',
     password : 'user1!',
