@@ -30,10 +30,32 @@ router.get('/', function(req, res, next) {
   })
 });
 
-router.get('/create', function(req, res, next) {
-  const query = new Query("INSERT INTO item VALUES(6,'테스트','testID','testPW','url','etc',1)");
-  const result = client.query(query)
-  res.status(200).end();
+router.post('/create', function(req, res, next) {
+  console.log(req.body);
+  var data = req.body;
+
+  console.log(data.title);
+  // const query = new Query(`INSERT INTO item VALUES(1,'title','id','pw','url','tec',1)`);
+  const query = new Query(`INSERT INTO item VALUES(1,'${data.title}','${data.id}','${data.pw}','${data.url}','${data.etc}',1)`);
+
+  var result = new Object();
+
+  client.query(query);
+
+  query.on("row",row=>{
+  });
+  query.on('end', () => {
+    console.log("success");
+    result.status = "success"
+    res.json(result);
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
+    result.status = "fail"
+    res.json(result);
+    res.status(400).end();
+  });
 });
 
 router.get('/read', function(req, res, next) {
