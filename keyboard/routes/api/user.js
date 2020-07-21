@@ -29,8 +29,24 @@ router.get('/', function(req, res, next) {
   })
 });
 
-router.get('/user/ID',function(req,res,next){
+router.get('/:id',function(req,res,next){
+  var id = req.params.id;
 
+  const query = new Query(`SELECT user_id FROM users WHERE id = '${id}'`);
+  const result = client.query(query);
+
+  query.on("row",row=>{
+    id = row.user_id;
+  });
+  query.on('end', () => {
+    var result = new Object();
+    result.id = id;
+    res.json(result);
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
+  });
 });
 
 router.post('/login/:id/:pw',function(req,res,next){
