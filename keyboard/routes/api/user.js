@@ -29,6 +29,10 @@ router.get('/', function(req, res, next) {
   })
 });
 
+router.get('/user/ID',function(req,res,next){
+
+});
+
 router.post('/login/:id/:pw',function(req,res,next){
   var id = req.params.id;
   var pw = req.params.pw;
@@ -61,7 +65,7 @@ router.post('/login/:id/:pw',function(req,res,next){
   });
 });
 
-router.post('/signUp/:id/:pw',function(req,res,next){
+router.post('/signUp',function(req,res,next){
   var id = req.params.id;
   var pw = req.params.pw;
 
