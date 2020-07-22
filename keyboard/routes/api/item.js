@@ -14,7 +14,6 @@ client.connect(err => {
   if (err) {
     console.error('connection error', err.stack)
   } else {
-    console.log('connected')
   }
 });
 
@@ -25,7 +24,6 @@ router.get('/', function(req, res, next) {
     if (err) {
       console.error('connection error', err.stack)
     } else {
-      console.log('connected')
     }
   })
 });
@@ -68,15 +66,33 @@ router.get('/read/:id', function(req, res, next) {
   /** 
    *  row에서 데이터 가져오고 end에서 검색할 때 발생한 각종 정보, error는 오류 발생시
    */
-  query.on("row",row=>{
-    rows.push(row);
+  
+  query.on("row", function(row){
+    var itemTemp = new Object();
+    itemTemp.title = row.title;
+    itemTemp.id = row.id;
+    itemTemp.pw = row.pw;
+    itemTemp.url = row.url;
+    itemTemp.etc = row.etc;
+    
+    const categoryQuery = new Query(`SELECT title FROM category WHERE user_id = ${id} and id = ${row.category_id}`);
+    client.query(categoryQuery);
+    
+    console.log("1");
+    return new Promise(function(resolve,reject){categoryQuery.on("row",category=>{
+      itemTemp.category = category.title;
+      rows.push(itemTemp)
+      console.log("2");
+      resolve();
+    })});
   });
+
   query.on('end', () => {
-    console.log(rows);
-    console.log('query done')
+    console.log("3");
     res.send(rows);
     res.status(200).end();
   });
+  
   query.on('error', err => {
     console.error(err.stack)
   });

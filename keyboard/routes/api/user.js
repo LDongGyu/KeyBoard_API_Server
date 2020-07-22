@@ -14,7 +14,6 @@ client.connect(err => {
   if (err) {
     console.error('connection error', err.stack)
   } else {
-    console.log('connected')
   }
 });
 
@@ -24,7 +23,6 @@ router.get('/', function(req, res, next) {
     if (err) {
       console.error('connection error', err.stack)
     } else {
-      console.log('connected')
     }
   })
 });
