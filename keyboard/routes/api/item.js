@@ -58,8 +58,10 @@ router.post('/create', function(req, res, next) {
   });
 });
 
-router.get('/read', function(req, res, next) {
-  const query = new Query("SELECT * FROM item")
+router.get('/read/:id', function(req, res, next) {
+  var id = req.params.id;
+
+  const query = new Query(`SELECT * FROM item WHERE user_id = ${id}`)
   const result = client.query(query)
 
   var rows = [];
