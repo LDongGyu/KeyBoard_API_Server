@@ -59,14 +59,13 @@ router.post('/create', function(req, res, next) {
 router.get('/read/:id', function(req, res, next) {
   var id = req.params.id;
 
-  const query = new Query(`SELECT * FROM item WHERE user_id = ${id}`)
+  const query = new Query(`SELECT item.title as title, item.id as iD, pw, url, item.etc as etc, category.title as category
+  FROM item JOIN category ON item.category_id = category.id
+  WHERE item.user_id = ${id}`)
   const result = client.query(query)
 
   var rows = [];
-  /** 
-   *  row에서 데이터 가져오고 end에서 검색할 때 발생한 각종 정보, error는 오류 발생시
-   */
-  
+
   query.on("row", function(row){
     var itemTemp = new Object();
     itemTemp.title = row.title;
@@ -74,21 +73,12 @@ router.get('/read/:id', function(req, res, next) {
     itemTemp.pw = row.pw;
     itemTemp.url = row.url;
     itemTemp.etc = row.etc;
+    itemTemp.category = row.category;
     
-    const categoryQuery = new Query(`SELECT title FROM category WHERE user_id = ${id} and id = ${row.category_id}`);
-    client.query(categoryQuery);
-    
-    console.log("1");
-    return new Promise(function(resolve,reject){categoryQuery.on("row",category=>{
-      itemTemp.category = category.title;
-      rows.push(itemTemp)
-      console.log("2");
-      resolve();
-    })});
+    rows.push(itemTemp);
   });
 
   query.on('end', () => {
-    console.log("3");
     res.send(rows);
     res.status(200).end();
   });
