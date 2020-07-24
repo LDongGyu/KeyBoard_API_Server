@@ -17,31 +17,17 @@ client.connect(err => {
   }
 });
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.send('item');
-  client.connect(err => {
-    if (err) {
-      console.error('connection error', err.stack)
-    } else {
-    }
-  })
-});
-
 router.post('/create', function(req, res, next) {
   console.log(req.body);
   var data = req.body;
 
   console.log(data.title);
-  // const query = new Query(`INSERT INTO item VALUES(1,'title','id','pw','url','tec',1)`);
   const query = new Query(`INSERT INTO item VALUES(1,'${data.title}','${data.id}','${data.pw}','${data.url}','${data.etc}',1)`);
-
   var result = new Object();
-
   client.query(query);
 
-  query.on("row",row=>{
-  });
+  // query.on("row",row=>{
+  // });
   query.on('end', () => {
     console.log("success");
     result.status = "success"
