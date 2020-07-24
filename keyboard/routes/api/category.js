@@ -17,31 +17,20 @@ client.connect(err => {
   }
 });
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.send('item');
-  client.connect(err => {
-    if (err) {
-      console.error('connection error', err.stack)
-    } else {
-    }
-  })
-});
-
 router.get('/create', function(req, res, next) {
   const query = new Query("INSERT INTO item VALUES(2,'etc',1,'title')");
-  const result = client.query(query);
+  client.query(query);
   res.status(200).end();
 });
 
-router.get('/read', function(req, res, next) {
-  const query = new Query("SELECT * FROM category");
-  const result = client.query(query);
+router.get('/read/:id', function(req, res, next) {
+  var id = req.params.id;
+
+  const query = new Query(`SELECT title FROM category WHERE user_id = ${id}`);
+  client.query(query);
 
   var rows = [];
-  /** 
-   *  row에서 데이터 가져오고 end에서 검색할 때 발생한 각종 정보, error는 오류 발생시
-   */
+
   query.on("row",row=>{
     rows.push(row);
   });

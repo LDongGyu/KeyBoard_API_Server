@@ -26,8 +26,6 @@ router.post('/create', function(req, res, next) {
   var result = new Object();
   client.query(query);
 
-  // query.on("row",row=>{
-  // });
   query.on('end', () => {
     console.log("success");
     result.status = "success"
@@ -87,4 +85,5 @@ router.get('/delete', function(req, res, next) {
   const result = client.query(query)
   res.status(200).end();
 });
+
 module.exports = router;
