@@ -22,7 +22,7 @@ router.post('/create', function(req, res, next) {
   var data = req.body;
 
   console.log(data.title);
-  const query = new Query(`INSERT INTO item VALUES(1,'${data.title}','${data.id}','${data.pw}','${data.url}','${data.etc}',1)`);
+  const query = new Query(`INSERT INTO item VALUES('${data.id}','${data.title}','${data.id}','${data.pw}','${data.url}','${data.etc}',1)`);
   var result = new Object();
   client.query(query);
 
