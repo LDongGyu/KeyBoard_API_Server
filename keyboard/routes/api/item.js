@@ -24,23 +24,29 @@ router.post('/create', function(req, res, next) {
   console.log(data)
   var category = 0;
 
-  category = data.id;
-  var query = new Query(`INSERT INTO item VALUES(${data.userid},'${data.title}','${data.id}','${data.pw}','${data.url}','${data.etc}',${category})`);
-  var result = new Object();
+  const pgp = require("pg-promise")();
+  const db = pgp('postgres://users:user1!@localhost:5432/postgres');
 
-  client.query(query);
-  query.on('end', () => {
-    console.log("item create success");
-    result.status = "success"
-    res.json(result);
-    res.status(200).end();
-  });
-  query.on('error', err => {
-    console.error(err.stack)
-    result.status = "fail"
-    res.json(result);
-    res.status(400).end();
-  });
+  db.one(`SELECT id FROM category WHERE title = '${data.category}'`)
+    .then(function(result){
+      category = result.id;
+      var query = new Query(`INSERT INTO item VALUES(${data.userid},'${data.title}','${data.id}','${data.pw}','${data.url}','${data.etc}',${category})`);
+      var result = new Object();
+
+      client.query(query);
+      query.on('end', () => {
+        console.log("item create success");
+        result.status = "success"
+        res.json(result);
+        res.status(200).end();
+      });
+      query.on('error', err => {
+        console.error(err.stack)
+        result.status = "fail"
+        res.json(result);
+        res.status(400).end();
+      });
+    });
   
 });
 
