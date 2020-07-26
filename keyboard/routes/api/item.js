@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const { Client }  = require("pg");
-const Query = require('pg').Query
+const Query = require('pg').Query;
 
 var client = new Client({
     user : 'users',
@@ -10,6 +10,7 @@ var client = new Client({
     password : 'user1!',
     port : 5432,
 })
+
 client.connect(err => {
   if (err) {
     console.error('connection error', err.stack)
@@ -22,45 +23,25 @@ router.post('/create', function(req, res, next) {
   var data = req.body;
   console.log(data)
   var category = 0;
-  const categoryQuery = new Query(`SELECT id FROM category WHERE title = '${data.category}'`)
-  var categorySearch = new Promise((resolve, reject)=>{
-    client.query(categoryQuery);
-    categoryQuery.on('row',(row)=>{
-      category = row.id;
-      console.log("category "+category);
-    });
-    categoryQuery.on('error',err =>{
-      reject();
-    });
-    console.log("1")
-    resolve();
-  });
 
+  category = data.id;
   var query = new Query(`INSERT INTO item VALUES(${data.userid},'${data.title}','${data.id}','${data.pw}','${data.url}','${data.etc}',${category})`);
   var result = new Object();
-  console.log("2")
-  categorySearch.then(()=>{
-    console.log(`${data.userid},'${data.title}','${data.id}','${data.pw}','${data.url}','${data.etc}',${category}`);
-    client.query(query);
-    console.log("3")
-    query.on('end', () => {
-      console.log("item create success");
-      result.status = "success"
-      res.json(result);
-      res.status(200).end();
-    });
-    query.on('error', err => {
-      console.error(err.stack)
-      result.status = "fail"
-      res.json(result);
-      res.status(400).end();
-    });
-  }).catch(error =>{
-    console.error(error.stack)
+
+  client.query(query);
+  query.on('end', () => {
+    console.log("item create success");
+    result.status = "success"
+    res.json(result);
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
     result.status = "fail"
     res.json(result);
     res.status(400).end();
   });
+  
 });
 
 router.get('/read/:id', function(req, res, next) {
