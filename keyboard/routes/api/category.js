@@ -26,7 +26,7 @@ router.get('/create', function(req, res, next) {
 router.get('/read/:id', function(req, res, next) {
   var id = req.params.id;
 
-  const query = new Query(`SELECT title FROM category WHERE user_id = ${id}`);
+  const query = new Query(`SELECT title FROM category WHERE userid = ${id}`);
   client.query(query);
 
   var rows = [];

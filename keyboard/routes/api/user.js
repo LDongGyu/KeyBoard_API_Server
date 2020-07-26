@@ -30,7 +30,7 @@ router.get('/', function(req, res, next) {
 router.get('/:id',function(req,res,next){
   var id = req.params.id;
 
-  const query = new Query(`SELECT user_id FROM users WHERE id = '${id}'`);
+  const query = new Query(`SELECT userid FROM users WHERE id = '${id}'`);
   const result = client.query(query);
 
   query.on("row",row=>{
@@ -135,14 +135,14 @@ router.get('/read', function(req, res, next) {
 
 router.get('/update', function(req, res, next) {
   const query = new Query("UPDATE users " +
-                          "SET user_id = 1, id='1', pw='1' "+
+                          "SET userid = 1, id='1', pw='1' "+
                           "WHERE user_id = 1");
   const result = client.query(query)
   res.status(200).end();
 });
 
 router.get('/delete', function(req, res, next) {
-  const query = new Query("DELETE FROM users WHERE user_id = 1");
+  const query = new Query("DELETE FROM users WHERE userid = 1");
   const result = client.query(query)
   res.status(200).end();
 });
