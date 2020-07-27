@@ -18,15 +18,27 @@ client.connect(err => {
 });
 
 router.get('/create', function(req, res, next) {
-  const query = new Query("INSERT INTO item VALUES(2,'etc',1,'title')");
+  var data = req.body;
+  const query = new Query(`INSERT INTO item(etc,userid,title) VALUES('${data.etc}',${data.id},'${data.title}')`);
   client.query(query);
-  res.status(200).end();
+  query.on('end', () => {
+    console.log("success");
+    result.status = "success"
+    res.json(result);
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
+    result.status = "fail"
+    res.json(result);
+    res.status(400).end();
+  });
 });
 
 router.get('/read/:id', function(req, res, next) {
   var id = req.params.id;
 
-  const query = new Query(`SELECT title FROM category WHERE userid = ${id}`);
+  const query = new Query(`SELECT title, etc FROM category WHERE userid = ${id}`);
   client.query(query);
 
   var rows = [];
