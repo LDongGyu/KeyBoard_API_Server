@@ -34,7 +34,7 @@ router.get('/:id',function(req,res,next){
   const result = client.query(query);
 
   query.on("row",row=>{
-    id = row.user_id;
+    id = row.userid;
   });
   query.on('end', () => {
     var result = new Object();
@@ -136,7 +136,7 @@ router.get('/read', function(req, res, next) {
 router.get('/update', function(req, res, next) {
   const query = new Query("UPDATE users " +
                           "SET userid = 1, id='1', pw='1' "+
-                          "WHERE user_id = 1");
+                          "WHERE userid = 1");
   const result = client.query(query)
   res.status(200).end();
 });

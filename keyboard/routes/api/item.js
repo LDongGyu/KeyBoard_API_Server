@@ -54,8 +54,8 @@ router.get('/read/:id', function(req, res, next) {
   var id = req.params.id;
 
   const query = new Query(`SELECT item.title as title, item.id as iD, pw, url, item.etc as etc, category.title as category
-  FROM item JOIN category ON item.category_id = category.id
-  WHERE item.user_id = ${id}`)
+  FROM item JOIN category ON item.categoryid = category.id
+  WHERE item.userid = ${id}`)
   const result = client.query(query)
 
   var rows = [];
@@ -84,14 +84,14 @@ router.get('/read/:id', function(req, res, next) {
 
 router.get('/update', function(req, res, next) {
   const query = new Query("UPDATE item " +
-                          "SET user_id = 1, title = '업뎃', id = 'id', pw ='pw', url = 'url', etc = 'etc', category_id = 1 "+
-                          "WHERE user_id = 5");
+                          "SET userid = 1, title = '업뎃', id = 'id', pw ='pw', url = 'url', etc = 'etc', categoryid = 1 "+
+                          "WHERE userid = 5");
   const result = client.query(query)
   res.status(200).end();
 });
 
 router.get('/delete', function(req, res, next) {
-  const query = new Query("DELETE FROM item WHERE user_id = 1");
+  const query = new Query("DELETE FROM item WHERE userid = 1");
   const result = client.query(query)
   res.status(200).end();
 });

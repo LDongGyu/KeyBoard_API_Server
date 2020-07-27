@@ -17,10 +17,12 @@ client.connect(err => {
   }
 });
 
-router.get('/create', function(req, res, next) {
+router.post('/create', function(req, res, next) {
   var data = req.body;
-  const query = new Query(`INSERT INTO item(etc,userid,title) VALUES('${data.etc}',${data.id},'${data.title}')`);
+  console.log("category create");
+  const query = new Query(`INSERT INTO category(etc,userid,title) VALUES('${data.etc}',${data.id},'${data.title}')`);
   client.query(query);
+  var result = new Object();
   query.on('end', () => {
     console.log("success");
     result.status = "success"
@@ -59,8 +61,8 @@ router.get('/read/:id', function(req, res, next) {
 
 router.get('/update', function(req, res, next) {
   const query = new Query("UPDATE item " +
-                          "SET id = 1, etc = '1', user_id = 1, title = '1' "+
-                          "WHERE user_id = 5");
+                          "SET id = 1, etc = '1', userid = 1, title = '1' "+
+                          "WHERE userid = 5");
   const result = client.query(query)
   res.status(200).end();
 });
