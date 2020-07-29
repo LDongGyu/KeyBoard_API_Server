@@ -105,34 +105,6 @@ router.post('/signUp',function(req,res,next){
   });
 });
 
-router.get('/create', function(req, res, next) {
-  const query = new Query("INSERT INTO users VALUES(1,'2','2')");
-  const result = client.query(query);
-  res.status(200).end();
-});
-
-router.get('/read', function(req, res, next) {
-  const query = new Query("SELECT * FROM users")
-  const result = client.query(query)
-
-  var rows = [];
-  /** 
-   *  row에서 데이터 가져오고 end에서 검색할 때 발생한 각종 정보, error는 오류 발생시
-   */
-  query.on("row",row=>{
-    rows.push(row);
-  });
-  query.on('end', () => {
-    console.log(rows);
-    console.log('query done')
-    res.send(rows);
-    res.status(200).end();
-  });
-  query.on('error', err => {
-    console.error(err.stack)
-  });
-});
-
 router.get('/update', function(req, res, next) {
   const query = new Query("UPDATE users " +
                           "SET userid = 1, id='1', pw='1' "+
