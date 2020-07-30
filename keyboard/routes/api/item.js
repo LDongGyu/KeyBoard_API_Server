@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const { Client }  = require("pg");
 const Query = require('pg').Query;
+const pgp = require("pg-promise")();
+const db = pgp('postgres://users:user1!@localhost:5432/postgres');
 
 var client = new Client({
     user : 'users',
@@ -18,14 +20,12 @@ client.connect(err => {
   }
 });
 
+
 router.post('/create', function(req, res, next) {
   console.log("item create");
   var data = req.body;
   console.log(data)
   var category = 0;
-
-  const pgp = require("pg-promise")();
-  const db = pgp('postgres://users:user1!@localhost:5432/postgres');
 
   db.one(`SELECT id FROM category WHERE title = '${data.category}'`)
     .then(function(result){
@@ -82,12 +82,32 @@ router.get('/read/:id', function(req, res, next) {
   });
 });
 
-router.get('/update', function(req, res, next) {
-  const query = new Query("UPDATE item " +
-                          "SET userid = 1, title = '업뎃', id = 'id', pw ='pw', url = 'url', etc = 'etc', categoryid = 1 "+
-                          "WHERE userid = 5");
-  const result = client.query(query)
-  res.status(200).end();
+router.post('/update', function(req, res, next) {
+  var data = req.body;
+  console.log(data)
+  var category = 0;
+  db.one(`SELECT id FROM category WHERE title = '${data.category}'`)
+  .then(function(result){
+    category = result.id;
+    var query = new Query("UPDATE item " +
+    `SET userid = ${data.userid}, title = '${data.title}', id = '${data.id}', pw ='${data.pw}', url = '${data.url}', etc = '${data.etc}', categoryid = ${category} `+
+    `WHERE userid = ${data.userid} and title = '${data.beforeTitle}'`);
+    var result = new Object();
+
+    client.query(query);
+    query.on('end', () => {
+      console.log("item update success");
+      result.status = "success"
+      res.json(result);
+      res.status(200).end();
+    });
+    query.on('error', err => {
+      console.error(err.stack)
+      result.status = "fail"
+      res.json(result);
+      res.status(400).end();
+    });
+  });
 });
 
 router.post('/delete', function(req, res, next) {
