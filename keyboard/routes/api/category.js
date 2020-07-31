@@ -67,9 +67,28 @@ router.get('/update', function(req, res, next) {
   res.status(200).end();
 });
 
-router.get('/delete', function(req, res, next) {
-  const query = new Query("DELETE FROM category WHERE id = 1");
-  const result = client.query(query)
-  res.status(200).end();
+router.post('/delete', function(req, res, next) {
+  var body = req.body;
+  var id = body.userid;
+  var title = body.title;
+  console.log("delete");
+  console.log(req.params);
+  const query = new Query(`DELETE FROM category WHERE userid = ${id} and title = '${title}'`);
+  client.query(query)
+  var result = new Object();
+
+  query.on('end', () => {
+    console.log("category delete success");
+    result.status = "success"
+    res.json(result);
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
+    result.status = "fail"
+    res.json(result);
+    res.status(400).end();
+  });
 });
+
 module.exports = router;
