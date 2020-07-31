@@ -113,9 +113,21 @@ router.get('/update', function(req, res, next) {
   res.status(200).end();
 });
 
-router.get('/delete', function(req, res, next) {
-  const query = new Query("DELETE FROM users WHERE userid = 1");
-  const result = client.query(query)
-  res.status(200).end();
+router.post('/delete', function(req, res, next) {
+  var userid = req.body.userid;
+  const query = new Query(`DELETE FROM users WHERE userid = ${userid}`);
+  client.query(query)
+  query.on('end', () => {
+    console.log("user delete success");
+    result.status = "success"
+    res.json(result);
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
+    result.status = "fail"
+    res.json(result);
+    res.status(400).end();
+  });
 });
 module.exports = router;
