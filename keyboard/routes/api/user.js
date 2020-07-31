@@ -106,17 +106,33 @@ router.post('/signUp',function(req,res,next){
 });
 
 router.get('/update', function(req, res, next) {
+  var data = req.body;
+  console.log(data);
+
   const query = new Query("UPDATE users " +
-                          "SET userid = 1, id='1', pw='1' "+
+                          `SET userid = ${data.userid}, id='${data.id}', pw='${data.pw}' `+
                           "WHERE userid = 1");
-  const result = client.query(query)
-  res.status(200).end();
+  var result = new Object();
+  client.query(query);
+  query.on('end', () => {
+    console.log("user update success");
+    result.status = "success"
+    res.json(result);
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
+    result.status = "fail"
+    res.json(result);
+    res.status(400).end();
+  });
 });
 
 router.post('/delete', function(req, res, next) {
   var userid = req.body.userid;
   const query = new Query(`DELETE FROM users WHERE userid = ${userid}`);
   client.query(query)
+  var result = new Object();
   query.on('end', () => {
     console.log("user delete success");
     result.status = "success"
