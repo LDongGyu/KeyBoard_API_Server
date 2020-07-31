@@ -59,12 +59,29 @@ router.get('/read/:id', function(req, res, next) {
   });
 });
 
-router.get('/update', function(req, res, next) {
-  const query = new Query("UPDATE item " +
-                          "SET id = 1, etc = '1', userid = 1, title = '1' "+
-                          "WHERE userid = 5");
-  const result = client.query(query)
-  res.status(200).end();
+router.post('/update', function(req, res, next) {
+  var data = req.body;
+  console.log(data)
+  var category = 0;
+
+  var query = new Query("UPDATE category " +
+  `SET userid = ${data.userid}, title = '${data.title}', etc = '${data.etc}' `+
+  `WHERE userid = ${data.userid} and title = '${data.beforeTitle}'`);
+  var result = new Object();
+
+  client.query(query);
+  query.on('end', () => {
+    console.log("category update success");
+    result.status = "success"
+    res.json(result);
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
+    result.status = "fail"
+    res.json(result);
+    res.status(400).end();
+  });
 });
 
 router.post('/delete', function(req, res, next) {
