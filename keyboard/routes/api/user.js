@@ -23,11 +23,12 @@ router.get('/:id',function(req,res,next){
   const query = new Query(`SELECT userid FROM users WHERE id = '${id}'`);
   client.query(query);
   query.on("row",row=>{
-    id = row.userId;
+    id = row.userid;
   });
   query.on('end', () => {
     var result = new Object();
     result.id = id;
+    console.log(result);
     res.json(result);
     res.status(200).end();
   });
