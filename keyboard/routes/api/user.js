@@ -17,16 +17,6 @@ client.connect(err => {
   }
 });
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  client.connect(err => {
-    if (err) {
-      console.error('connection error', err.stack)
-    } else {
-    }
-  })
-});
-
 router.get('/:id',function(req,res,next){
   var id = req.params.id;
 
@@ -50,7 +40,8 @@ router.get('/:id',function(req,res,next){
 router.post('/login/:id/:pw',function(req,res,next){
   var id = req.params.id;
   var pw = req.params.pw;
-
+  console.log(id);
+  console.log(pw);
   const query = new Query(`SELECT * FROM users WHERE id = '${id}' and pw = '${pw}'`);
   const result = client.query(query);
 
@@ -136,6 +127,27 @@ router.post('/delete', function(req, res, next) {
   query.on('end', () => {
     console.log("user delete success");
     result.status = "success"
+    res.json(result);
+    res.status(200).end();
+  });
+  query.on('error', err => {
+    console.error(err.stack)
+    result.status = "fail"
+    res.json(result);
+    res.status(400).end();
+  });
+});
+
+router.post('/pwchange', function(req, res, next){
+  var reqBody = req.body;
+  const query = new Query("UPDATE users "+
+                          `SET pw = '${reqBody.newpw}'`+
+                          `WHERE userid = ${reqBody.userid}`);
+  var result = new Object();
+  client.query(query);
+  query.on('end',()=>{
+    console.log("user pw update success");
+    result.status = "success";
     res.json(result);
     res.status(200).end();
   });
