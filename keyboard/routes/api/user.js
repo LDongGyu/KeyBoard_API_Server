@@ -133,7 +133,7 @@ router.post('/delete', function(req, res, next) {
   });
 });
 
-router.post('/pwchange', function(req, res, next){
+router.post('/pwChange', function(req, res, next){
   var reqBody = req.body;
   const query = new Query("UPDATE users "+
                           `SET pw = '${reqBody.newPw}'`+
