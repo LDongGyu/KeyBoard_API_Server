@@ -19,10 +19,10 @@ client.connect(err => {
 
 router.post('/create', function(req, res, next) {
   var data = req.body;
-  console.log("category create");
   const query = new Query(`INSERT INTO category(etc,userid,title) VALUES('${data.etc}',${data.id},'${data.title}')`);
-  client.query(query);
   var result = new Object();
+
+  client.query(query);
   query.on('end', () => {
     console.log("success");
     result.status = "success"
@@ -39,12 +39,10 @@ router.post('/create', function(req, res, next) {
 
 router.get('/read/:id', function(req, res, next) {
   var id = req.params.id;
-
   const query = new Query(`SELECT title, etc FROM category WHERE userid = ${id}`);
-  client.query(query);
-
   var rows = [];
 
+  client.query(query);
   query.on("row",row=>{
     rows.push(row);
   });
@@ -61,11 +59,9 @@ router.get('/read/:id', function(req, res, next) {
 
 router.post('/update', function(req, res, next) {
   var data = req.body;
-  console.log(data)
-
   var query = new Query("UPDATE category " +
   `SET title = '${data.title}', etc = '${data.etc}' `+
-  `WHERE userid = ${data.id} and title = '${data.beforetitle}'`);
+  `WHERE userid = ${data.id} and title = '${data.beforeTitle}'`);
   var result = new Object();
 
   client.query(query);
@@ -85,14 +81,12 @@ router.post('/update', function(req, res, next) {
 
 router.post('/delete', function(req, res, next) {
   var body = req.body;
-  var id = body.userid;
+  var id = body.userId;
   var title = body.title;
-  console.log("delete");
-  console.log(req.params);
-  const query = new Query(`DELETE FROM category WHERE userid = ${id} and title = '${title}'`);
-  client.query(query)
   var result = new Object();
 
+  const query = new Query(`DELETE FROM category WHERE userid = ${id} and title = '${title}'`);
+  client.query(query)
   query.on('end', () => {
     console.log("category delete success");
     result.status = "success"

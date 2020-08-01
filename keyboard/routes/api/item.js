@@ -22,15 +22,13 @@ client.connect(err => {
 
 
 router.post('/create', function(req, res, next) {
-  console.log("item create");
   var data = req.body;
-  console.log(data)
   var category = 0;
 
   db.one(`SELECT id FROM category WHERE title = '${data.category}'`)
     .then(function(result){
       category = result.id;
-      var query = new Query(`INSERT INTO item VALUES(${data.userid},'${data.title}','${data.id}','${data.pw}','${data.url}','${data.etc}',${category})`);
+      var query = new Query(`INSERT INTO item VALUES(${data.userId},'${data.title}','${data.id}','${data.pw}','${data.url}','${data.etc}',${category})`);
       var result = new Object();
 
       client.query(query);
@@ -56,7 +54,7 @@ router.get('/read/:id', function(req, res, next) {
   const query = new Query(`SELECT item.title as title, item.id as iD, pw, url, item.etc as etc, category.title as category
   FROM item JOIN category ON item.categoryid = category.id
   WHERE item.userid = ${id}`)
-  const result = client.query(query)
+  client.query(query)
 
   var rows = [];
 
@@ -85,15 +83,14 @@ router.get('/read/:id', function(req, res, next) {
 router.post('/read/child',function(req, res, next){
   var body = req.body;
   var category = body.title;
-  var userid = body.id;
-  console.log("category: "+category+" id: "+userid);
-  db.one(`SELECT id FROM category WHERE title = '${category}' and userid = ${userid}`)
+  var userId = body.id;
+  var rows = [];
+
+  db.one(`SELECT id FROM category WHERE title = '${category}' and userid = ${userId}`)
   .then(function(result){
     var query = new Query(`SELECT * FROM item WHERE userid = ${userid} and categoryid = ${result.id}`);
+    
     client.query(query);
-
-    var rows = [];
-
     query.on('row',(row)=>{
       var itemTemp = new Object();
       itemTemp.title = row.title;
@@ -118,8 +115,8 @@ router.post('/read/child',function(req, res, next){
 
 router.post('/update', function(req, res, next) {
   var data = req.body;
-  console.log(data)
   var category = 0;
+
   db.one(`SELECT id FROM category WHERE title = '${data.category}'`)
   .then(function(result){
     category = result.id;
@@ -146,14 +143,12 @@ router.post('/update', function(req, res, next) {
 
 router.post('/delete', function(req, res, next) {
   var body = req.body;
-  var id = body.userid;
+  var id = body.userId;
   var title = body.title;
-  console.log("delete");
-  console.log(req.params);
-  const query = new Query(`DELETE FROM item WHERE userid = ${id} and title = '${title}'`);
-  client.query(query)
   var result = new Object();
 
+  const query = new Query(`DELETE FROM item WHERE userid = ${id} and title = '${title}'`);
+  client.query(query)
   query.on('end', () => {
     console.log("item delete success");
     result.status = "success"
