@@ -62,11 +62,10 @@ router.get('/read/:id', function(req, res, next) {
 router.post('/update', function(req, res, next) {
   var data = req.body;
   console.log(data)
-  var category = 0;
 
   var query = new Query("UPDATE category " +
-  `SET userid = ${data.userid}, title = '${data.title}', etc = '${data.etc}' `+
-  `WHERE userid = ${data.userid} and title = '${data.beforeTitle}'`);
+  `SET title = '${data.title}', etc = '${data.etc}' `+
+  `WHERE userid = ${data.id} and title = '${data.beforetitle}'`);
   var result = new Object();
 
   client.query(query);
