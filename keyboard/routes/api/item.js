@@ -52,8 +52,8 @@ router.get('/read/:id', function(req, res, next) {
   var id = req.params.id;
 
   const query = new Query(`SELECT item.title as title, item.id as iD, pw, url, item.etc as etc, category.title as category
-  FROM item JOIN category ON item.categoryid = category.id
-  WHERE item.userid = ${id}`)
+  FROM item JOIN category ON item.category_id = category.id
+  WHERE item.user_id = ${id}`)
   client.query(query)
 
   var rows = [];
@@ -86,9 +86,9 @@ router.post('/read/child',function(req, res, next){
   var userId = body.id;
   var rows = [];
 
-  db.one(`SELECT id FROM category WHERE title = '${category}' and userid = ${userId}`)
+  db.one(`SELECT id FROM category WHERE title = '${category}' and user_id = ${userId}`)
   .then(function(result){
-    var query = new Query(`SELECT * FROM item WHERE userid = ${userId} and categoryid = ${result.id}`);
+    var query = new Query(`SELECT * FROM item WHERE user_id = ${userId} and category_id = ${result.id}`);
     
     client.query(query);
     query.on('row',(row)=>{
@@ -121,8 +121,8 @@ router.post('/update', function(req, res, next) {
   .then(function(result){
     category = result.id;
     var query = new Query("UPDATE item " +
-    `SET userid = ${data.userId}, title = '${data.title}', id = '${data.id}', pw ='${data.pw}', url = '${data.url}', etc = '${data.etc}', categoryid = ${category} `+
-    `WHERE userid = ${data.userId} and title = '${data.beforeTitle}'`);
+    `SET user_id = ${data.userId}, title = '${data.title}', id = '${data.id}', pw ='${data.pw}', url = '${data.url}', etc = '${data.etc}', category_id = ${category} `+
+    `WHERE user_id = ${data.userId} and title = '${data.beforeTitle}'`);
     var result = new Object();
 
     client.query(query);
@@ -147,7 +147,7 @@ router.post('/delete', function(req, res, next) {
   var title = body.title;
   var result = new Object();
 
-  const query = new Query(`DELETE FROM item WHERE userid = ${id} and title = '${title}'`);
+  const query = new Query(`DELETE FROM item WHERE user_id = ${id} and title = '${title}'`);
   client.query(query)
   query.on('end', () => {
     console.log("item delete success");

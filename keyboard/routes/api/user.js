@@ -20,10 +20,10 @@ client.connect(err => {
 router.get('/:id',function(req,res,next){
   var id = req.params.id;
 
-  const query = new Query(`SELECT userid FROM users WHERE id = '${id}'`);
+  const query = new Query(`SELECT user_id FROM users WHERE id = '${id}'`);
   client.query(query);
   query.on("row",row=>{
-    id = row.userid;
+    id = row.user_id;
   });
   query.on('end', () => {
     var result = new Object();
@@ -96,8 +96,8 @@ router.get('/update', function(req, res, next) {
   var result = new Object();
 
   const query = new Query("UPDATE users " +
-                          `SET userid = ${data.userId}, id='${data.id}', pw='${data.pw}' `+
-                          "WHERE userid = 1");
+                          `SET user_id = ${data.userId}, id='${data.id}', pw='${data.pw}' `+
+                          "WHERE user_id = 1");
   client.query(query);
   query.on('end', () => {
     console.log("user update success");
@@ -117,7 +117,7 @@ router.post('/delete', function(req, res, next) {
   var userId = req.body.userId;
   var result = new Object();
 
-  const query = new Query(`DELETE FROM users WHERE userid = ${userId}`);
+  const query = new Query(`DELETE FROM users WHERE user_id = ${userId}`);
   client.query(query)
   query.on('end', () => {
     console.log("user delete success");
@@ -137,7 +137,7 @@ router.post('/pwchange', function(req, res, next){
   var reqBody = req.body;
   const query = new Query("UPDATE users "+
                           `SET pw = '${reqBody.newPw}'`+
-                          `WHERE userid = ${reqBody.userId}`);
+                          `WHERE user_id = ${reqBody.userId}`);
   var result = new Object();
 
   client.query(query);
