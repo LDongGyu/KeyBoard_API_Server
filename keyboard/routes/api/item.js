@@ -82,6 +82,40 @@ router.get('/read/:id', function(req, res, next) {
   });
 });
 
+router.post('/read/child',function(req, res, next){
+  var body = req.body;
+  var category = body.title;
+  var userid = body.id;
+  console.log("category: "+category+" id: "+userid);
+  db.one(`SELECT id FROM category WHERE title = '${category}' and userid = ${userid}`)
+  .then(function(result){
+    var query = new Query(`SELECT * FROM item WHERE userid = ${userid} and categoryid = ${result.id}`);
+    client.query(query);
+
+    var rows = [];
+
+    query.on('row',(row)=>{
+      var itemTemp = new Object();
+      itemTemp.title = row.title;
+      itemTemp.id = row.id;
+      itemTemp.pw = row.pw;
+      itemTemp.url = row.url;
+      itemTemp.etc = row.etc;
+      itemTemp.category = category;
+      rows.push(itemTemp);
+    });
+  
+    query.on('end', () => {
+      res.send(rows);
+      res.status(200).end();
+    });
+    
+    query.on('error', err => {
+      console.error(err.stack)
+    });
+  });
+});
+
 router.post('/update', function(req, res, next) {
   var data = req.body;
   console.log(data)
