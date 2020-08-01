@@ -88,7 +88,7 @@ router.post('/read/child',function(req, res, next){
 
   db.one(`SELECT id FROM category WHERE title = '${category}' and userid = ${userId}`)
   .then(function(result){
-    var query = new Query(`SELECT * FROM item WHERE userid = ${userid} and categoryid = ${result.id}`);
+    var query = new Query(`SELECT * FROM item WHERE userid = ${userId} and categoryid = ${result.id}`);
     
     client.query(query);
     query.on('row',(row)=>{
@@ -121,8 +121,8 @@ router.post('/update', function(req, res, next) {
   .then(function(result){
     category = result.id;
     var query = new Query("UPDATE item " +
-    `SET userid = ${data.userid}, title = '${data.title}', id = '${data.id}', pw ='${data.pw}', url = '${data.url}', etc = '${data.etc}', categoryid = ${category} `+
-    `WHERE userid = ${data.userid} and title = '${data.beforeTitle}'`);
+    `SET userid = ${data.userId}, title = '${data.title}', id = '${data.id}', pw ='${data.pw}', url = '${data.url}', etc = '${data.etc}', categoryid = ${category} `+
+    `WHERE userid = ${data.userId} and title = '${data.beforeTitle}'`);
     var result = new Object();
 
     client.query(query);

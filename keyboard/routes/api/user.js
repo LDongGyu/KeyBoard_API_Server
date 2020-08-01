@@ -23,7 +23,7 @@ router.get('/:id',function(req,res,next){
   const query = new Query(`SELECT userid FROM users WHERE id = '${id}'`);
   client.query(query);
   query.on("row",row=>{
-    id = row.userid;
+    id = row.userId;
   });
   query.on('end', () => {
     var result = new Object();
@@ -36,12 +36,11 @@ router.get('/:id',function(req,res,next){
   });
 });
 
-router.post('/login/:id/:pw',function(req,res,next){
-  var id = req.params.id;
-  var pw = req.params.pw;
+router.post('/signIn',function(req,res,next){
+  var data = req.body;
   var length = 0;
-
-  const query = new Query(`SELECT * FROM users WHERE id = '${id}' and pw = '${pw}'`);
+  console.log(data);
+  const query = new Query(`SELECT * FROM users WHERE id = '${data.id}' and pw = '${data.pw}'`);
   client.query(query);
   query.on("row",row=>{
     console.log(row);
@@ -67,9 +66,9 @@ router.post('/login/:id/:pw',function(req,res,next){
 });
 
 router.post('/signUp',function(req,res,next){
-  var id = req.params.id;
-  var pw = req.params.pw;
-  const query = new Query(`INSERT INTO users(id,pw) VALUES('${id}','${pw}')`);
+  var data = req.body;
+
+  const query = new Query(`INSERT INTO users(id,pw) VALUES('${data.id}','${data.pw}')`);
   var result = new Object();
 
   client.query(query);
@@ -96,7 +95,7 @@ router.get('/update', function(req, res, next) {
   var result = new Object();
 
   const query = new Query("UPDATE users " +
-                          `SET userid = ${data.userid}, id='${data.id}', pw='${data.pw}' `+
+                          `SET userid = ${data.userId}, id='${data.id}', pw='${data.pw}' `+
                           "WHERE userid = 1");
   client.query(query);
   query.on('end', () => {
