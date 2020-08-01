@@ -3,7 +3,6 @@ KeyBoard 플랫폼 API 서버
 <br>  
 
 ## API 명세서
-***
 
 **User** 
 | URL | HTTP Method | Body | 설명  
@@ -34,6 +33,6 @@ KeyBoard 플랫폼 API 서버
 <br>  
     
 ## Tech Stack
----
+
 BackEnd : Node.js
 DB : PostgreSQL
